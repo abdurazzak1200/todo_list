@@ -1,23 +1,38 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    <h1>My To Do List</h1>
-    <table>
-        {% for task in tasks %}
-        <tr>
-            <td>{{task.title}}</td>
-            <td><a href="{% url 'task' task.id %}">View</a></td>
-        </tr>
-        {% empty %}
-        <h4>No items in list</h4>
-        {% endfor %}
-    </table>
-</body>
-</html>
+{% extends 'base/base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-8"><p>{{request.user}}</p></div>
+    <div class="col-4">
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'logout' %}">Выйти</a>
+        {% else %}
+        <a href="{% url 'login' %}">Войти</a>
+        {% endif %}
+    </div>
+</div>
+
+<h1>Мои задачи</h1>
+
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+        <form style="d-flex" method="GET">
+            <input class="form-control me-2" type="text" name="search-area" value="{{search_input}}">
+            <input class="btn btn-outline-success" type="submit" value="Поиск">
+        </form>
+        <a href="{% url 'task-create' %}">Добавить задачу</a>
+    </div>
+</nav>
+<table>
+    {% for task in tasks %}
+    <tr>
+        <td><a href="{% url 'task' task.id %}">{{task.title}}</a></td>
+
+        <td><a href="{% url 'task-edit' task.id %}">Изменить</a></td>
+        <td><a href="{% url 'task-delete' task.id %}">Удалить</a></td>
+    </tr>
+    {% empty %}
+    <h4>No items in list</h4>
+    {% endfor %}
+</table>
+{% endblock %}
